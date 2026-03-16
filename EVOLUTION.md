@@ -1,4 +1,4 @@
-# The Evolution of World Models for Media
+# The Evolution of World Models for Video, Games & 3D
 
 A deep analysis of how methods build upon each other — from foundational ideas to the current frontier.
 
@@ -8,20 +8,23 @@ A deep analysis of how methods build upon each other — from foundational ideas
 
 - [The Two Founding Philosophies (2018–2022)](#the-two-founding-philosophies-20182022)
 - [The Big Bang: February 2024](#the-big-bang-february-2024)
-- [The Foundation Lineages (2024–2026)](#the-foundation-lineages-20242026)
+- [The Major Lineages (2024–2026)](#the-major-lineages-20242026)
   - [The Genie Line: From 2D to Real-Time 3D](#the-genie-line-from-2d-to-real-time-3d)
   - [The V-JEPA Line: From Understanding to Action](#the-v-jepa-line-from-understanding-to-action)
   - [The Cosmos Line: Platform Play](#the-cosmos-line-platform-play)
-- [The Convergence: Hybrid Architectures](#the-convergence-hybrid-architectures)
 - [The Game Simulation Arc: From RL Training to Multiplayer Worlds](#the-game-simulation-arc-from-rl-training-to-multiplayer-worlds)
   - [Phase 1: Diffusion as Environment (May–Oct 2024)](#phase-1-diffusion-as-environment-mayoct-2024)
   - [Phase 2: Scale and Specialization (Jan–Aug 2025)](#phase-2-scale-and-specialization-janaug-2025)
   - [Phase 3: Self-Forcing and Multi-Agent (Late 2025–2026)](#phase-3-self-forcing-and-multi-agent-late-20252026)
+  - [The Domain Progression](#the-domain-progression)
+  - [The Speed Progression](#the-speed-progression)
+  - [The Action-Conditioning Progression](#the-action-conditioning-progression)
+  - [The Memory Strategies](#the-memory-strategies)
 - [The 3D World Generation Arc](#the-3d-world-generation-arc-from-implicit-to-native-3d)
 - [The Physics Thread](#the-physics-thread-from-they-cant-to-steer-at-inference)
 - [Cross-Pollination: The Architectural Imports](#cross-pollination-the-architectural-imports)
-- [The Interactive Video Arc](#the-interactive-video-arc-from-passive-to-embodied)
-- [The Dependency Graph](#the-dependency-graph)
+- [The Convergence: Hybrid Architectures](#the-convergence-hybrid-architectures)
+- [How It All Connects](#how-it-all-connects)
 
 ---
 
@@ -29,7 +32,7 @@ A deep analysis of how methods build upon each other — from foundational ideas
 
 Everything in this landscape descends from two opposing bets on how machines should model the world:
 
-1. **[Ha & Schmidhuber (2018)](https://arxiv.org/abs/1803.10122)** — *"World Models"*: Learn an environment simulator (VAE + RNN + Controller), then train agents *inside their own dreams*. The key legacy: **most complexity belongs in the world model, not the policy**. This fed directly into the Dreamer series ([V1](https://arxiv.org/abs/1912.01603)→[V2](https://arxiv.org/abs/2010.02193)→[V3](https://arxiv.org/abs/2301.04104)), which proved agents could learn entirely in imagination, eventually collecting diamonds in Minecraft from scratch.
+1. **[Ha & Schmidhuber (2018)](https://arxiv.org/abs/1803.10122)** — *"World Models"*: Learn an environment simulator (VAE + RNN + Controller), then train agents *inside their own dreams*. The key legacy: **most complexity belongs in the world model, not the policy**. [PlaNet (2019)](https://arxiv.org/abs/1811.04551) refined this into the RSSM (Recurrent State-Space Model) for latent dynamics, which fed directly into the Dreamer series ([V1](https://arxiv.org/abs/1912.01603)→[V2](https://arxiv.org/abs/2010.02193)→[V3](https://arxiv.org/abs/2301.04104)), proving agents could learn entirely in imagination, eventually collecting diamonds in Minecraft from scratch.
 
 2. **[LeCun (2022)](https://openreview.net/pdf?id=BZ5a1r-kVsf)** — *"A Path Towards Autonomous Machine Intelligence"*: Proposed JEPA — predict in *abstract representation space*, never in pixel space. The core thesis: generative models waste capacity hallucinating pixel-level detail that is irrelevant for understanding. This became Meta's V-JEPA line.
 
@@ -47,7 +50,7 @@ Three foundation models launched simultaneously, each taking a different archite
 | **[Genie](https://arxiv.org/abs/2402.15391)** | VQ-VAE + MaskGIT + Latent Action Model | Learn action control from *unlabeled* video via discrete tokens |
 | **[V-JEPA](https://github.com/facebookresearch/jepa)** | Non-generative JEPA with spatiotemporal masking | Predict masked video in latent space, never generate pixels |
 
-**[Sora](https://openai.com/research/video-generation-models-as-world-simulators)** borrowed DiT's insight (Peebles & Xie, 2022) that replacing U-Nets with Vision Transformers unlocks scaling laws for diffusion. Its innovation was **spacetime patches** — decomposing video into 3D chunks that serve as transformer tokens, enabling variable resolution/duration. OpenAI positioned it not as a video generator but as a "world simulator," and this framing catalyzed the entire field.
+**[Sora](https://openai.com/research/video-generation-models-as-world-simulators)** borrowed DiT's insight (Peebles & Xie, 2022) that replacing U-Nets with Vision Transformers unlocks scaling laws for diffusion. Its innovation was **spacetime patches** — decomposing video into 3D chunks that serve as transformer tokens, enabling variable resolution/duration. OpenAI positioned it not as a video generator but as a "world simulator," and this framing shaped the field's ambition.
 
 **[Genie](https://arxiv.org/abs/2402.15391)** took VQ-VAE's discrete tokenization and made a radical bet: you don't need action labels. Its **Latent Action Model** discovers controllable actions (just 8 discrete codes) from 30K hours of unlabeled platformer gameplay. This was the first proof that interactive world simulation could emerge from passive video.
 
@@ -55,7 +58,7 @@ Three foundation models launched simultaneously, each taking a different archite
 
 ---
 
-## The Foundation Lineages (2024–2026)
+## The Major Lineages (2024–2026)
 
 ### The Genie Line: From 2D to Real-Time 3D
 
@@ -79,7 +82,7 @@ Representation        Spatiotemporal mask     1M+ hours, zero-shot planning
                                              16x faster than generative planners
 ```
 
-[V-JEPA 2](https://arxiv.org/abs/2506.09985) added **action conditioning** (V-JEPA 2-AC) — the non-generative world model could now plan robot actions by predicting outcomes in latent space, achieving zero-shot transfer to new environments. This proved LeCun's thesis: you don't need to generate pixels to act in the world.
+[V-JEPA 2](https://arxiv.org/abs/2506.09985) added **action conditioning** (V-JEPA 2-AC) — the non-generative world model could now plan robot actions by predicting outcomes in latent space, achieving zero-shot transfer to new environments. This supported LeCun's thesis: you don't need to generate pixels to act in the world.
 
 ### The Cosmos Line: Platform Play
 
@@ -90,21 +93,7 @@ per modality           Text/Image/Video2World in one model
 Open-source            RL post-training on 200M clips
 ```
 
-NVIDIA's bet was different: not a single model but an **open-source platform** — tokenizers, pre-trained models, and fine-tuning recipes. [Cosmos-Predict2.5](https://arxiv.org/abs/2511.00062) unified three separate models into one flow-based architecture, adding Cosmos-Reason1 for text grounding. The innovation was infrastructure, not architecture.
-
----
-
-## The Convergence: Hybrid Architectures
-
-The three foundation lineages exposed a structural tension. Pure generative models (Sora/Genie) produce rich pixels but lack causal action control and accumulate errors over long horizons. JEPA-style objectives (V-JEPA) are efficient and transferable but prone to **representation collapse** — mapping all observations to constant vectors — because no generative decoder enforces meaningful distinctions. The next wave of models attempted to synthesize both sides.
-
-**[PAN](https://arxiv.org/abs/2511.09057)** (MBZUAI, Nov 2025) proposed the cleanest separation: **Generative Latent Prediction (GLP)** uses an LLM dynamics backbone (Qwen2.5-VL-7B) to predict latent world states autoregressively conditioned on natural language actions, while a diffusion decoder (Wan2.1-T2V-14B) renders those states into video via Causal Swin-DPM. The LLM reasons about *what happens next* in abstract space (avoiding pixel hallucination); the decoder ensures latent representations stay meaningful (avoiding JEPA collapse).
-
-**[GWM-1](https://runwayml.com/research/introducing-runway-gwm-1)** (Runway, Dec 2025) took a different path to the same goal: post-train an existing video generator (Gen-4.5) into an autoregressive frame-by-frame model with cross-domain action conditioning (camera, events, poses, speech). Where PAN separates dynamics and rendering architecturally, GWM-1 unifies them in a single model with domain-specific post-training variants (Worlds, Avatars, Robotics).
-
-**[LingBot-World](https://arxiv.org/abs/2601.20540)** (Robbyant, Jan 2026) marked an open-source milestone: a 28B MoE-DiT (extending Wan2.2) with block causal attention for KV-cached streaming at 16 FPS and sub-1s latency. Up to 10 minutes of stable generation with text-based environmental control — the first fully open-source model matching closed-source SOTA.
-
-These three models represent distinct strategies for the same destination — long-horizon, action-conditioned, general-purpose world simulation — via architectural separation (PAN), unified post-training (GWM-1), or open-source scale (LingBot-World).
+NVIDIA's bet was different: not a single model but an **open-source platform** — tokenizers, pre-trained models, and fine-tuning recipes. [Cosmos-Predict2.5](https://arxiv.org/abs/2511.00062) unified three separate models into one flow-based architecture, adding a text-grounding reasoning module (Cosmos-Reason1). The innovation was infrastructure, not architecture. (The diagram below reflects this by placing Cosmos under "Platform" rather than alongside the model lineages.)
 
 ---
 
@@ -116,9 +105,9 @@ This is the most dramatic evolutionary thread. In 24 months, game world models w
 
 **[DIAMOND](https://arxiv.org/abs/2405.12399)** (May 2024) asked: what if we replace DreamerV3's discrete latent tokenizer with a diffusion model? The answer: visual details that discrete tokens discard actually matter for RL policy quality. SoTA on Atari 100k. But it was batch-only, not interactive.
 
-**[GameNGen](https://arxiv.org/abs/2408.14837)** (Aug 2024) proved the concept could scale to 3D. Google trained an RL agent to play DOOM, used the gameplay as training data, and ran a Stable-Diffusion-based model at 20 FPS. The key trick: **conditioning augmentation** (adding noise to past frames during training) prevented error accumulation during autoregressive rollout. This is the direct ancestor of all interactive game world models.
+**[GameNGen](https://arxiv.org/abs/2408.14837)** (Aug 2024) proved the concept could scale to 3D. Google trained an RL agent to play DOOM, used the gameplay as training data, and ran a Stable-Diffusion-based model at 20 FPS. The key trick: **conditioning augmentation** (adding noise to past frames during training) prevented error accumulation during autoregressive rollout. This was one of the earliest proofs that diffusion models could serve as real-time game engines.
 
-**[Oasis](https://oasis-model.github.io/)** (Oct 2024) pivoted architecturally: transformers instead of U-Nets, **Dynamic Noising** instead of conditioning augmentation, Minecraft instead of DOOM. The domain shift to Minecraft was consequential — procedural infinite worlds, clear action spaces, and an active research community made it the default benchmark.
+**[Oasis](https://oasis-model.github.io/)** (Oct 2024) took a different architectural approach: transformers instead of U-Nets, **Dynamic Noising** instead of conditioning augmentation, Minecraft instead of DOOM. The domain shift to Minecraft was consequential — procedural infinite worlds, clear action spaces, and an active research community made it the default benchmark.
 
 ### Phase 2: Scale and Specialization (Jan–Aug 2025)
 
@@ -169,6 +158,35 @@ The evolution of training paradigms:
 | [MineWorld](https://arxiv.org/abs/2504.08388) | Apr 2025 | 4–7 FPS | Parallel token decoding |
 | [Matrix-Game 2.0](https://arxiv.org/abs/2508.13009) | Aug 2025 | 25 FPS | Causal attention + distillation |
 | [Waypoint-1](https://over.world/blog/the-path-to-real-time-worlds-and-why-it-matters) | Jan 2026 | 30 FPS | Self-forcing + DMD |
+
+#### The Action-Conditioning Progression
+
+```
+No actions ──→ Latent actions ──→ Keyboard/mouse ──→ Camera/pose ──→ Language ──→ Cross-domain
+(Sora)         (Genie)            (GameNGen)         (GEN3C)         (GameCraft-2)  (GWM-1)
+```
+
+*GEN3C = NVIDIA's camera-conditioned 3D-consistent video generation. GameCraft-2 = Hunyuan-GameCraft-2 (see Phase 2 above).*
+
+Key stepping stones:
+
+- **[iVideoGPT](https://arxiv.org/abs/2405.15223)** (May 2024): First GPT-style interactive world model with compressive tokenization.
+- **[AdaWorld](https://arxiv.org/abs/2503.18938)** (Mar 2025): Self-supervised latent action extraction enabling zero-shot transfer across *unseen* environments — no retraining per domain.
+- **[Vid2World](https://arxiv.org/abs/2505.14357)** (May 2025): Showed you can **causalize** an existing pretrained video diffusion model (reshape architecture, retrain with causal objectives) to make it interactive.
+- **[RELIC](https://arxiv.org/abs/2512.04040)** (Dec 2025): Camera-aware compressed latent tokens in KV cache → real-time 16 FPS long-horizon interaction.
+- **[LIVE](https://arxiv.org/abs/2602.03747)** (Feb 2026): Cycle-consistency (forward-backward generation) eliminates need for teacher distillation — a training-free path to long-horizon coherence.
+- **[Generated Reality](https://arxiv.org/abs/2602.18422)** (Feb 2026): Full embodied tracking — 3D head pose + joint-level hand poses → dexterous egocentric world simulation.
+
+#### The Memory Strategies
+
+| Strategy | Representative | Mechanism |
+|----------|---------------|-----------|
+| Fixed context window | [DIAMOND](https://arxiv.org/abs/2405.12399), [GameNGen](https://arxiv.org/abs/2408.14837) | Limited frame history |
+| KV cache compression | [Oasis](https://oasis-model.github.io/), [RELIC](https://arxiv.org/abs/2512.04040), [Yume-1.5](https://arxiv.org/abs/2512.22096) | Sliding window / linear attention |
+| Explicit memory bank | [WORLDMEM](https://arxiv.org/abs/2504.12369), [Captain Safari](https://arxiv.org/abs/2511.22815) | Pose-indexed frame storage + retrieval |
+| SSM-based memory | [Long-Context SSM WMs](https://arxiv.org/abs/2505.20171) | Linear-cost long-range temporal |
+| Cycle-consistent | [LIVE](https://arxiv.org/abs/2602.03747) | Forward-backward reconstruction |
+| Reconstituted context | [WorldPlay](https://arxiv.org/abs/2512.14614) | Rebuild past frames with temporal reframing |
 
 ---
 
@@ -241,83 +259,105 @@ The field's rapid progress comes from importing innovations from adjacent areas:
 | Source | Import | Destination |
 |--------|--------|-------------|
 | **LLMs** | Autoregressive next-token prediction, scaling laws, causal attention | Genie, Oasis, MineWorld, Matrix-Game |
-| **DiT** (Peebles & Xie 2022) | Transformer backbone for diffusion, adaLN conditioning | Sora, GameNGen, Oasis, all DiT-based models |
+| **DiT** (Peebles & Xie 2022) | Transformer backbone for diffusion, adaLN conditioning | Sora, Oasis, Matrix-Game, all DiT-based models |
 | **VQ-VAE / MAGVIT** | Discrete visual tokenization, masked generative prediction | Genie (LAM), MineWorld, Emu3/3.5 |
 | **3DGS / NeRF** | Real-time neural rendering, Gaussian primitives | Terra, Visionary, Marble, HunyuanWorld |
 | **Mamba / SSMs** | Linear-complexity sequence modeling | Long-Context SSM World Models (hybrid SSM+attention) |
 | **RingAttention** | Million-token context windows | LWM (1M token video-language sequences) |
 
-The most consequential import was **LLM-style autoregressive prediction applied to visual tokens**. Emu3.5 pushed this furthest: 10T+ tokens of unified vision-language training, then DiDA (Discrete Diffusion Adaptation) to convert sequential decoding to parallel prediction for ~20x speedup. This is the "language model beats diffusion" thesis applied to world modeling.
+One consequential import was **LLM-style autoregressive prediction applied to visual tokens**. Emu3.5 pushed this furthest: 10T+ tokens of unified vision-language training, then DiDA (Discrete Diffusion Adaptation) to convert sequential decoding to parallel prediction for ~20x speedup. This is the "language model beats diffusion" thesis applied to world modeling.
 
 ---
 
-## The Interactive Video Arc: From Passive to Embodied
+## The Convergence: Hybrid Architectures
 
-The action-conditioning evolution:
+The major lineages exposed a structural tension. Pure generative models (Sora/Genie) produce rich pixels but lack causal action control and accumulate errors over long horizons. JEPA-style objectives (V-JEPA) are efficient and transferable but prone to **representation collapse** — mapping all observations to constant vectors — because no generative decoder enforces meaningful distinctions. The next wave of models attempted to synthesize both sides.
 
-```
-No actions ──→ Latent actions ──→ Keyboard/mouse ──→ Camera/pose ──→ Language ──→ Cross-domain
-(Sora)         (Genie)            (GameNGen)         (GEN3C)         (HGC-2)      (GWM-1)
-```
+**[PAN](https://arxiv.org/abs/2511.09057)** (MBZUAI, Nov 2025) proposed the cleanest separation: **Generative Latent Prediction (GLP)** uses an LLM dynamics backbone (Qwen2.5-VL-7B) to predict latent world states autoregressively conditioned on natural language actions, while a diffusion decoder (Wan2.1-T2V-14B) renders those states into video via Causal Swin-DPM. The LLM reasons about *what happens next* in abstract space (avoiding pixel hallucination); the decoder ensures latent representations stay meaningful (avoiding JEPA collapse).
 
-Key stepping stones:
+**[GWM-1](https://runwayml.com/research/introducing-runway-gwm-1)** (Runway, Dec 2025) took a different path to the same goal: post-train an existing video generator (Gen-4.5) into an autoregressive frame-by-frame model with cross-domain action conditioning (camera, events, poses, speech). Where PAN separates dynamics and rendering architecturally, GWM-1 unifies them in a single model with domain-specific post-training variants (Worlds, Avatars, Robotics).
 
-- **[iVideoGPT](https://arxiv.org/abs/2405.15223)** (May 2024): First GPT-style interactive world model with compressive tokenization.
-- **[AdaWorld](https://arxiv.org/abs/2503.18938)** (Mar 2025): Self-supervised latent action extraction enabling zero-shot transfer across *unseen* environments — no retraining per domain.
-- **[Vid2World](https://arxiv.org/abs/2505.14357)** (May 2025): Showed you can **causalize** an existing pretrained video diffusion model (reshape architecture, retrain with causal objectives) to make it interactive.
-- **[RELIC](https://arxiv.org/abs/2512.04040)** (Dec 2025): Camera-aware compressed latent tokens in KV cache → real-time 16 FPS long-horizon interaction.
-- **[LIVE](https://arxiv.org/abs/2602.03747)** (Feb 2026): Cycle-consistency (forward-backward generation) eliminates need for teacher distillation — a training-free path to long-horizon coherence.
-- **[Generated Reality](https://arxiv.org/abs/2602.18422)** (Feb 2026): Full embodied tracking — 3D head pose + joint-level hand poses → dexterous egocentric world simulation.
+**[LingBot-World](https://arxiv.org/abs/2601.20540)** (Robbyant, Jan 2026) marked an open-source milestone: a 28B MoE-DiT (extending Wan2.2) with block causal attention for KV-cached streaming at 16 FPS and sub-1s latency. Up to 10 minutes of stable generation with text-based environmental control — the first fully open-source model matching closed-source SOTA.
 
-The memory solutions evolved in parallel:
-
-| Strategy | Representative | Mechanism |
-|----------|---------------|-----------|
-| Fixed context window | [DIAMOND](https://arxiv.org/abs/2405.12399), [GameNGen](https://arxiv.org/abs/2408.14837) | Limited frame history |
-| KV cache compression | [Oasis](https://oasis-model.github.io/), [RELIC](https://arxiv.org/abs/2512.04040), [Yume-1.5](https://arxiv.org/abs/2512.22096) | Sliding window / linear attention |
-| Explicit memory bank | [WORLDMEM](https://arxiv.org/abs/2504.12369), [Captain Safari](https://arxiv.org/abs/2511.22815) | Pose-indexed frame storage + retrieval |
-| SSM-based memory | [Long-Context SSM WMs](https://arxiv.org/abs/2505.20171) | Linear-cost long-range temporal |
-| Cycle-consistent | [LIVE](https://arxiv.org/abs/2602.03747) | Forward-backward reconstruction |
-| Reconstituted context | [WorldPlay](https://arxiv.org/abs/2512.14614) | Rebuild past frames with temporal reframing |
+These three models represent distinct strategies for the same destination — long-horizon, action-conditioned, general-purpose world simulation — via architectural separation (PAN), unified post-training (GWM-1), or open-source scale (LingBot-World).
 
 ---
 
-## The Dependency Graph
+## How It All Connects
 
 ```
-Ha & Schmidhuber (2018)                LeCun JEPA (2022)
-VAE + RNN + Controller                 Predict in Representation Space
-         |                                      |
-    DreamerV1/V2/V3                      I-JEPA → V-JEPA → V-JEPA 2
-    (latent imagination)                 (non-generative → action-conditioned)
-         |                                      |            |
-         |    DiT (2022)       VQ-VAE/MAGVIT    |            |
-         |    ViT + diffusion  Discrete tokens  |            |
-         |         |                |           |            |
-         +──────→ Sora          Genie──→Genie 2──→Genie 3   |
-         |    (spacetime       (latent   (3D latent  (real-time
-         |     patches)        actions)   diffusion)   24fps)
-         |         |               |                         |
-         |    GameNGen         Oasis──→Matrix-Game──→MG 2.0──→Solaris
-         |    (DOOM 20fps)    (Minecraft)  (17B)      (25fps)  (multiplayer)
-         |         |                                     |
-         |    DIAMOND                               Self-Forcing
-         |    (diffusion        Diffusion Forcing──→Checkpointed SF
-         |     for RL)          (variable noise)
-         |         |                                     |
-    Cosmos──→Cosmos-Predict2.5                           |
-    (platform) (unified flow)                            |
-         |         |                                     |
-         |    3DGS / NeRF                                |
-         |         |                                     |
-         |    Terra, Marble ─────────────────────────────+
-         |    HunyuanWorld, Visionary                    |
-         |                                               |
-         +──────────────────── CONVERGENCE ──────────────+
-                                    |
-                     PAN (LLM dynamics + diffusion decoder)
-                     GWM-1 (unified post-training)
-                     LingBot-World (open-source 28B MoE)
+                    WORLD MODEL EVOLUTION (2018 → 2026)
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  FOUNDATIONS (2018–2022)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Philosophies                         Enabling Techniques
+  ────────────                         ────────────────────
+  Ha & Schmidhuber (2018)              DiT (2022)
+  │  Dream inside learned models       ViT replaces U-Net for diffusion
+  │
+  ├──→ PlaNet (2019)                   VQ-VAE / MAGVIT
+  │    RSSM latent dynamics            Discrete visual tokenization
+  │
+  └──→ Dreamer V1 → V2 → V3           3DGS / NeRF
+       Latent imagination RL           Neural 3D rendering
+
+  LeCun (2022)
+  │  Predict in representation space
+  └──→ I-JEPA (2023)
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  FEBRUARY 2024: THE BIG BANG
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Sora ←── DiT          Genie ←── VQ-VAE       V-JEPA ←── JEPA
+  Spacetime patches      Latent actions          Non-generative
+  "World simulator"      from unlabeled          Spatiotemporal
+   framing               video                   masking
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  LINEAGES (2024–2026)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Genie Line             JEPA Line            Game Simulation
+  ──────────             ─────────            ───────────────
+  Genie (Feb 24)         V-JEPA (Feb 24)      DIAMOND (May 24) ──┐
+       ↓                      ↓               GameNGen (Aug 24) ──┤
+  Genie 2 (Dec 24)       V-JEPA 2 (Jun 25)                       ↓
+  3D, emergent NPCs      Action-conditioned   Oasis (Oct 24)
+       ↓                 Zero-shot planning        ↓
+  Genie 3 (Aug 25)                            Matrix-Game (Jun 25)
+  Real-time 24fps                                  ↓
+                                              MG 2.0 (Aug 25)
+                                                   ↓
+                                              Solaris (Feb 26)
+                                              Multiplayer
+
+  ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+
+  3D Generation          Platform             Training Paradigms
+  (← 3DGS / NeRF)       ────────             (orthogonal techniques)
+  ─────────────                               ──────────────────
+  Terra, Marble          Cosmos (Jan 25)      Diffusion Forcing
+  HunyuanWorld                ↓                    ↓
+  Visionary              Cosmos-Predict2.5    Self-Forcing
+                         (Oct 25)                  ↓
+                                              Checkpointed SF
+                                              (→ used by Solaris)
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  CONVERGENCE (emerging thesis)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  PAN            — LLM dynamics + diffusion decoder
+  GWM-1          — unified post-training
+  LingBot-World  — open-source 28B MoE
+
 ```
 
 The field converges toward: **real-time, action-conditioned, physically-aware, multi-agent world simulators** — built by combining LLM-scale autoregressive transformers, diffusion rendering, 3D Gaussian representations, self-forcing training, and inference-time physics alignment.
