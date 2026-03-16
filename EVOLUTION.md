@@ -290,34 +290,34 @@ VAE + RNN + Controller                 Predict in Representation Space
          |                                      |
     DreamerV1/V2/V3                      I-JEPA → V-JEPA → V-JEPA 2
     (latent imagination)                 (non-generative → action-conditioned)
-         |                                      |
-         |    DiT (2022)       VQ-VAE/MAGVIT    |    RingAttention
-         |    ViT + diffusion  Discrete tokens  |    1M context
-         |         |                |           |         |
-         +──────→ Sora          Genie──→Genie 2──→Genie 3     LWM
+         |                                      |            |
+         |    DiT (2022)       VQ-VAE/MAGVIT    |            |
+         |    ViT + diffusion  Discrete tokens  |            |
+         |         |                |           |            |
+         +──────→ Sora          Genie──→Genie 2──→Genie 3   |
          |    (spacetime       (latent   (3D latent  (real-time
          |     patches)        actions)   diffusion)   24fps)
-         |         |               |
+         |         |               |                         |
          |    GameNGen         Oasis──→Matrix-Game──→MG 2.0──→Solaris
          |    (DOOM 20fps)    (Minecraft)  (17B)      (25fps)  (multiplayer)
          |         |                                     |
          |    DIAMOND                               Self-Forcing
          |    (diffusion        Diffusion Forcing──→Checkpointed SF
          |     for RL)          (variable noise)
-         |                                              |
-    Cosmos──→Cosmos-Predict2.5                          |
-    (platform) (unified flow)                           |
-         |                                              |
-         +──────────────────── CONVERGENCE ─────────────+
+         |         |                                     |
+    Cosmos──→Cosmos-Predict2.5                           |
+    (platform) (unified flow)                            |
+         |         |                                     |
+         |    3DGS / NeRF                                |
+         |         |                                     |
+         |    Terra, Marble ─────────────────────────────+
+         |    HunyuanWorld, Visionary                    |
+         |                                               |
+         +──────────────────── CONVERGENCE ──────────────+
                                     |
                      PAN (LLM dynamics + diffusion decoder)
                      GWM-1 (unified post-training)
                      LingBot-World (open-source 28B MoE)
-
-         3DGS / NeRF                            Physics Thread
-              |                                      |
-    Terra, HunyuanWorld                   "How Far" → Geometry Forcing
-    Visionary, Marble                     → ProPhy → C3 → WMReward
 ```
 
 The field converges toward: **real-time, action-conditioned, physically-aware, multi-agent world simulators** — built by combining LLM-scale autoregressive transformers, diffusion rendering, 3D Gaussian representations, self-forcing training, and inference-time physics alignment.
