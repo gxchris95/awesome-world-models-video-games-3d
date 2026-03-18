@@ -186,7 +186,10 @@ Large-scale, general-purpose world models that serve as platforms for multiple d
 - **WorldPlay** (HKUST/Tencent, Dec 2025) — **Reconstituted context memory** dynamically rebuilds past frames with temporal reframing for geometric consistency. [[Paper](https://arxiv.org/abs/2512.14614)]
 - **TeleWorld** (TeleAI, Dec 2025) — **Generation-reconstruction-guidance paradigm** with dynamic 4D representation for real-time multimodal interaction. [[Paper](https://arxiv.org/abs/2601.00051)]
 - **NeoVerse** (CAS/CreateAI, Jan 2026) — **Pose-free feed-forward 4D reconstruction** with online monocular degradation simulation from in-the-wild video. [[Paper](https://arxiv.org/abs/2601.00393)] [[Website](https://neoverse-4d.github.io)]
-
+- **RayZer** (Adobe May 2025) — **Self-supervised feed-forward 3D reconstruction** multi-view 3D Vision
+model trained without any 3D supervision. [[Paper](https://arxiv.org/pdf/2505.00702)] [[Website](https://hwjiang1510.github.io/RayZer/)]
+- **E-RayZer** (CMU/Adobe Dec 2025) — **a self-supervised large 3D Vision model that learns truly 3D-aware representations** directly frome unlabeled images. [[Paper](https://arxiv.org/pdf/2512.10950)] [[Website](https://qitaozhao.github.io/E-RayZer)]
+- **DreamDojo** (NVIDIA Feb 2026) — **A Generalist Robot World Model from Large-Scale Human Videos** [[Paper](https://arxiv.org/pdf/2602.06949)] [[Website](https://dreamdojo-world.github.io/)]
 ---
 
 ## World Models for Creative & Entertainment Applications
@@ -271,7 +274,7 @@ How models incorporate spatial understanding.
 - **WorldBench** (Jan 2026) — **Disentangled physics diagnostics**; isolates individual physical principles (object permanence, friction, viscosity) instead of testing them jointly. [[Paper](https://arxiv.org/abs/2601.21282)] [[Website](https://world-bench.github.io/)]
 - **PhysicsMind** (Jan 2026) — **Law-consistent reasoning + generation**; evaluates both VQA physical reasoning and physics-compliant video generation across canonical laws. [[Paper](https://arxiv.org/abs/2601.16007)]
 - **MIND** (Feb 2026) — **Closed-loop memory + action control**; first open-domain revisited benchmark testing temporal stability across viewpoint changes. [[Paper](https://arxiv.org/abs/2602.08025)] [[Code](https://github.com/CSU-JPG/MIND)]
-
+-  **WorldScore** (Nov 2025) —  **The first unified benchmark for world generation**; A Unified Evaluation Benchmark for World Generation. [[Paper](https://arxiv.org/pdf/2504.00983)] [[Code](https://github.com/haoyi-duan/WorldScore)]
 ---
 
 ## Theory, Positions & Explainability
