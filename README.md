@@ -86,6 +86,7 @@ Large-scale, general-purpose world models that serve as platforms for multiple d
 - **Genie 2** (DeepMind, Dec 2024) — **Autoregressive latent diffusion** for 3D worlds from a single image; minute-long consistency with emergent NPC behavior. [[Blog](https://deepmind.google/discover/blog/genie-2-a-large-scale-foundation-world-model/)]
 - **Cosmos** (NVIDIA, Jan 2025) — **Open-source platform** (4B-14B params); full pipeline with tokenizers, pre-trained models, permissive license. [[Paper](https://arxiv.org/abs/2501.03575)] [[Website](https://www.nvidia.com/en-us/ai/cosmos/)] [[Code](https://github.com/NVIDIA/Cosmos)]
 - **V-JEPA 2** (Meta, Jun 2025) — **1M+ hours pre-training, <62 hours fine-tuning** for zero-shot robotic planning; 16x faster than video-generation-based planners. [[Paper](https://arxiv.org/abs/2506.09985)] [[Website](https://ai.meta.com/blog/v-jepa-2-world-model-benchmarks/)] [[Code](https://github.com/facebookresearch/vjepa2)]
+- **V-JEPA 2.1** ![New](https://img.shields.io/badge/-New-brightgreen) (Meta, Mar 2026) — **Dense Predictive Loss + Deep Self-Supervision** across multiple encoder layers; multi-modal tokenizers unlock spatially organized, temporally stable video representations. [[Paper](https://arxiv.org/abs/2603.14482)]
 - **Genie 3** (DeepMind, Aug 2025) — First **real-time interactive** world model (24fps, 720p); promptable world events via text during live play. [[Blog](https://deepmind.google/discover/blog/genie-3-a-new-frontier-for-world-models/)]
 - **Emu3.5** (BAAI, Oct 2025) — **Discrete Diffusion Adaptation (DiDA)** converts autoregressive decoding to parallel prediction for ~20x speedup; 10T+ token training. [[Paper](https://arxiv.org/abs/2510.26583)] [[Website](https://emu.world)] [[Code](https://github.com/baaivision/Emu3.5)]
 - **RTFM** (World Labs, Oct 2025) — **Learned renderer** with spatial memory and context juggling for unbounded persistence; single H100. [[Blog](https://www.worldlabs.ai/blog/rtfm)]
@@ -109,6 +110,8 @@ Large-scale, general-purpose world models that serve as platforms for multiple d
 - **DeepVerse** (Jun 2025) — **Explicit geometric predictions** from previous timesteps incorporated into action-conditioned 4D video generation. [[Paper](https://arxiv.org/abs/2506.01103)]
 - **UnityVideo** (Dec 2025) — **Dynamic noising + modality switcher** unifies heterogeneous modalities for cross-modal world-aware video generation. [[Paper](https://arxiv.org/abs/2512.07831)] [[Website](https://jackailab.github.io/Projects/UnityVideo)] [[Code](https://github.com/dvlab-research/UnityVideo)]
 - **NuiWorld** (Jan 2026) — **Generative bootstrapping** synthesizes training data; compresses variable scene chunks to flattened vectors for scalable generation. [[Paper](https://arxiv.org/abs/2601.19048)]
+- **DreamWorld** ![New](https://img.shields.io/badge/-New-brightgreen) (USTC, Mar 2026) — **Joint world modeling** with consistent constraint annealing predicts pixels and foundation model features simultaneously for temporal-spatial-semantic consistency. [[Paper](https://arxiv.org/abs/2603.00466)] [[Code](https://github.com/ABU121111/DreamWorld)]
+- **LiveWorld** ![New](https://img.shields.io/badge/-New-brightgreen) (Mar 2026) — **Monitor-based out-of-sight dynamics** continues evolving unseen entities and resynchronizes states upon revisiting for true 4D dynamic world simulation. [[Paper](https://arxiv.org/abs/2603.07145)] [[Code](https://github.com/ZichengDuan/LiveWorld)]
 - **Olaf-World** (Feb 2026) — **Seq-delta-REPA** aligns latent actions to temporal semantic effects for cross-context transferability. [[Paper](https://arxiv.org/abs/2602.10104)] [[Website](https://showlab.github.io/Olaf-World/)] [[Code](https://github.com/showlab/Olaf-World)]
 
 ### Interactive Video Generation
@@ -120,6 +123,9 @@ Large-scale, general-purpose world models that serve as platforms for multiple d
 - **Astra** (Dec 2025) — **Noise-augmented history memory** balances responsiveness with temporal coherence in streaming autoregressive denoising. [[Paper](https://arxiv.org/abs/2512.08931)] [[Website](https://eternalevan.github.io/Astra-project/)] [[Code](https://github.com/EternalEvan/Astra)]
 - **RELIC** (Adobe, Dec 2025) — **Camera-aware compressed latent tokens** in KV cache enable real-time 16 FPS long-horizon interactive generation. [[Paper](https://arxiv.org/abs/2512.04040)] [[Website](https://relic-worldmodel.github.io/)]
 - **LIVE** (Feb 2026) — **Cycle-consistency** with forward-backward generation eliminates need for teacher distillation in long-horizon interaction. [[Paper](https://arxiv.org/abs/2602.03747)] [[Website](https://junchao-cs.github.io/LIVE-demo/)]
+- **MosaicMem** ![New](https://img.shields.io/badge/-New-brightgreen) (U Toronto/Georgia Tech, Mar 2026) — **Hybrid spatial memory** combines mosaic-based and token-based representations for controllable long-horizon interactive generation. [[Paper](https://arxiv.org/abs/2603.17117)] [[Website](https://mosaicmem.github.io/mosaicmem/)]
+- **WorldCache** ![New](https://img.shields.io/badge/-New-brightgreen) (MBZUAI, Mar 2026) — **Perception-constrained dynamical caching** accelerates video world model inference via content-aware heterogeneous token caching. [[Paper](https://arxiv.org/abs/2603.22286)] [[Website](https://umair1221.github.io/World-Cache/)]
+- **HyDRA** ![New](https://img.shields.io/badge/-New-brightgreen) (Mar 2026) — **Spatiotemporal relevance-driven memory retrieval** compresses memory into tokens for preserving identity and motion of hidden dynamic subjects. [[Paper](https://arxiv.org/abs/2603.25716)]
 - **Generated Reality** (Stanford, Feb 2026) — Conditions on **tracked 3D head pose + joint-level hand poses** for dexterous egocentric world simulation. [[Paper](https://arxiv.org/abs/2602.18422)]
 
 ### Long-form & Controllable Video
@@ -130,6 +136,8 @@ Large-scale, general-purpose world models that serve as platforms for multiple d
 - **Yume** (Shanghai AI Lab, Jul 2025) — **Masked Video Diffusion Transformer** with memory enables infinite autoregressive world generation. [[Paper](https://arxiv.org/abs/2507.17744)] [[Website](https://stdstu12.github.io/YUME-Project/)] [[Code](https://github.com/stdstu12/YUME)]
 - **LongVie 2** (Dec 2025) — **Three-stage training** with degradation-aware bridging and history-context guidance for 5-minute controllable video. [[Paper](https://arxiv.org/abs/2512.13604)] [[Website](https://vchitect.github.io/LongVie2-project/)]
 - **Yume-1.5** (Shanghai AI Lab, Dec 2025) — **Unified context compression** via linear attention + bidirectional distillation for real-time streaming interaction. [[Paper](https://arxiv.org/abs/2512.22096)] [[Website](https://stdstu12.github.io/YUME-Project)] [[Code](https://github.com/stdstu12/YUME)]
+- **UCM** ![New](https://img.shields.io/badge/-New-brightgreen) (Tsinghua, Feb 2026) — **Time-aware positional encoding warping** unifies camera control and memory for consistent long-horizon world generation. [[Paper](https://arxiv.org/abs/2602.22960)] [[Website](https://humanaigc.github.io/ucm-webpage/)]
+- **Stereo World Model** ![New](https://img.shields.io/badge/-New-brightgreen) (HKU, Mar 2026) — **Camera-guided stereo generation** produces spatially consistent stereoscopic video from monocular world models. [[Paper](https://arxiv.org/abs/2603.17375)] [[Website](https://sunyangtian.github.io/StereoWorld-web/)] [[Code](https://github.com/SunYangtian/StereoWorld)]
 - **VerseCrafter** (Jan 2026) — **4D geometric control** via static point cloud background + per-object 3D Gaussian trajectories. [[Paper](https://arxiv.org/abs/2601.05138)] [[Website](https://sixiaozheng.github.io/VerseCrafter_page/)]
 
 ### Physics-Aware Video Generation
@@ -138,6 +146,7 @@ Large-scale, general-purpose world models that serve as platforms for multiple d
 - **Geometry Forcing** (Microsoft, Jul 2025) — **Angular and scale alignment** guide video diffusion models to internalize latent 3D geometric representations. `ICLR 2026` [[Paper](https://arxiv.org/abs/2507.07982)] [[Website](https://GeometryForcing.github.io)]
 - **ProPhy** (Dec 2025) — **Mixture of semantic + refinement physics experts** progressively align token-level physical dynamics during generation. [[Paper](https://arxiv.org/abs/2512.05564)]
 - **World Models That Know When They Don't Know** (Princeton, Dec 2025) — **C3 framework** for continuous-scale calibrated uncertainty at subpatch-level localization. [[Paper](https://arxiv.org/abs/2512.05927)]
+- **Interpreting Physics in Video World Models** ![New](https://img.shields.io/badge/-New-brightgreen) (Meta FAIR/McGill, Feb 2026) — **Physics Emergence Zone** discovered via layerwise probing reveals how physical variables organize across network depth. [[Paper](https://arxiv.org/abs/2602.07050)]
 - **Inference-time Physics Alignment** (Meta FAIR, Jan 2026) — **WMReward** uses V-JEPA 2 as reward model for inference-time denoising trajectory search. [[Paper](https://arxiv.org/abs/2601.10553)]
 
 ---
@@ -177,6 +186,7 @@ Large-scale, general-purpose world models that serve as platforms for multiple d
 - **Terra** (Tsinghua/Kuaishou, Oct 2025) — **Point-to-Gaussian VAE** operates in intrinsic 3D latent space for native geometric consistency. [[Paper](https://arxiv.org/abs/2510.14977)] [[Website](https://huang-yh.github.io/terra/)]
 - **WorldGrow** (Oct 2025) — **Hierarchical 3D block inpainting** with coarse-to-fine strategy for infinite scene expansion. [[Paper](https://arxiv.org/abs/2510.21682)] [[Code](https://github.com/world-grow/WorldGrow)]
 - **TRELLISWorld** (CMU/HKUST, Oct 2025) — **Training-free multi-tile denoising** repurposes object diffusion models for scalable scene generation. [[Paper](https://arxiv.org/abs/2510.23880)]
+- **GeoWorld** ![New](https://img.shields.io/badge/-New-brightgreen) (Nankai, Nov 2025) — **Geometry model-guided video generation** with geometry alignment loss produces high-fidelity 3D scenes from a single image. [[Paper](https://arxiv.org/abs/2511.23191)] [[Website](https://peaes.github.io/GeoWorld/)]
 - **MagicWorld** (NUS/Zhejiang, Nov 2025) — **Action-guided 3D geometry module** constructs point clouds for viewpoint-stable video exploration. [[Paper](https://arxiv.org/abs/2511.18886)]
 - **ChronosObserver** (Beihang, Dec 2025) — **Training-free hyperspace** synchronizes multi-view diffusion sampling trajectories for 4D consistency. [[Paper](https://arxiv.org/abs/2512.01481)]
 - **DynamicVerse** (Xiamen/Meta, Dec 2025) — **Window-based bundle adjustment** with global optimization for metric-scale 4D annotations. [[Paper](https://arxiv.org/abs/2512.03000)]
@@ -186,6 +196,9 @@ Large-scale, general-purpose world models that serve as platforms for multiple d
 - **WorldPlay** (HKUST/Tencent, Dec 2025) — **Reconstituted context memory** dynamically rebuilds past frames with temporal reframing for geometric consistency. [[Paper](https://arxiv.org/abs/2512.14614)]
 - **TeleWorld** (TeleAI, Dec 2025) — **Generation-reconstruction-guidance paradigm** with dynamic 4D representation for real-time multimodal interaction. [[Paper](https://arxiv.org/abs/2601.00051)]
 - **NeoVerse** (CAS/CreateAI, Jan 2026) — **Pose-free feed-forward 4D reconstruction** with online monocular degradation simulation from in-the-wild video. [[Paper](https://arxiv.org/abs/2601.00393)] [[Website](https://neoverse-4d.github.io)]
+- **Beyond Pixel Histories** ![New](https://img.shields.io/badge/-New-brightgreen) (Edinburgh/Microsoft, Mar 2026) — **PERSIST** maintains persistent 3D state representation for world models that reason beyond 2D pixel history. [[Paper](https://arxiv.org/abs/2603.03482)] [[Website](https://francelico.github.io/persist.github.io/)]
+- **VEGA-3D** ![New](https://img.shields.io/badge/-New-brightgreen) (HUST, Mar 2026) — **Video extracted generative awareness** unleashes implicit 3D priors from generation models for scene understanding. [[Paper](https://arxiv.org/abs/2603.19235)] [[Code](https://github.com/H-EmbodVis/VEGA-3D)]
+- **From Part to Whole** ![New](https://img.shields.io/badge/-New-brightgreen) (Mar 2026) — **Adaptive slot-gating** discovers latent structural slots with a learnable prototype bank for hierarchical single-image 3D generation. `ICME 2026` [[Paper](https://arxiv.org/abs/2603.21557)]
 
 ---
 
@@ -200,6 +213,7 @@ Large-scale, general-purpose world models that serve as platforms for multiple d
 - **AVWM** (Tsinghua, Dec 2025) — **Modality-expert diffusion transformer** for synchronized audio-visual generation with binaural spatial cues. [[Paper](https://arxiv.org/abs/2512.00883)]
 - **WorldPack** (UTokyo/DeepMind, Dec 2025) — **Hierarchical trajectory packing** compresses long-horizon memory for spatial consistency in world modeling. [[Paper](https://arxiv.org/abs/2512.02473)]
 - **IC-World** (NTU/Tencent, Dec 2025) — **GRPO-based geometry rewards** enforce multi-view consistency in in-context shared world generation. [[Paper](https://arxiv.org/abs/2512.02793)] [[Code](https://github.com/wufan-cse/IC-World)]
+- **Walk through Paintings** ![New](https://img.shields.io/badge/-New-brightgreen) (CMU/UIUC, Jan 2026) — **Egocentric World Model (EgoWM)** adapts video diffusion into action-conditioned world models for controllable navigation within painted scenes. [[Paper](https://arxiv.org/abs/2601.15284)]
 - **Choreographing a World of Dynamic Objects** (Stanford, Jan 2026) — **Rectified flow SDS** with hierarchical Lagrangian deformations for category-agnostic 4D motion synthesis. [[Paper](https://arxiv.org/abs/2601.04194)] [[Website](https://yanzhelyu.github.io/chord)]
 
 ---
@@ -270,7 +284,10 @@ How models incorporate spatial understanding.
 - **SmallWorlds** (Nov 2025) — **Isolated dynamics testbed**; compares RSSM, Transformers, Diffusion, and Neural ODEs under controlled rollout degradation. [[Paper](https://arxiv.org/abs/2511.23465)]
 - **WorldBench** (Jan 2026) — **Disentangled physics diagnostics**; isolates individual physical principles (object permanence, friction, viscosity) instead of testing them jointly. [[Paper](https://arxiv.org/abs/2601.21282)] [[Website](https://world-bench.github.io/)]
 - **PhysicsMind** (Jan 2026) — **Law-consistent reasoning + generation**; evaluates both VQA physical reasoning and physics-compliant video generation across canonical laws. [[Paper](https://arxiv.org/abs/2601.16007)]
+- **Wow, wo, val!** ![New](https://img.shields.io/badge/-New-brightgreen) (Jan 2026) — **Embodied Turing Test** with 22 metrics across perception, planning, prediction, generalization, and execution for world model evaluation. [[Paper](https://arxiv.org/abs/2601.04137)]
 - **MIND** (Feb 2026) — **Closed-loop memory + action control**; first open-domain revisited benchmark testing temporal stability across viewpoint changes. [[Paper](https://arxiv.org/abs/2602.08025)] [[Code](https://github.com/CSU-JPG/MIND)]
+- **WorldArena** ![New](https://img.shields.io/badge/-New-brightgreen) (Tsinghua, Feb 2026) — **EWMScore** holistic metric evaluates perception and functional utility of embodied world models in unified framework. [[Paper](https://arxiv.org/abs/2602.08971)] [[Website](https://world-arena.ai/)] [[Code](https://github.com/tsinghua-fib-lab/WorldArena)]
+- **Omni-WorldBench** ![New](https://img.shields.io/badge/-New-brightgreen) (UCAS/CASIA/Alibaba, Mar 2026) — **Interaction-centric 4D evaluation** comprehensively benchmarks world models across diverse interaction modalities. [[Paper](https://arxiv.org/abs/2603.22212)] [[Code](https://github.com/AMAP-ML/Omni-WorldBench)]
 
 ---
 
@@ -294,6 +311,7 @@ How models incorporate spatial understanding.
 ### Explainability
 
 - **Transformers Use Causal World Models in Maze-Solving Tasks** (Dec 2024) — Shows transformers develop causally interpretable internal world models with asymmetric feature activation. [[Paper](https://arxiv.org/abs/2412.11867)]
+- **MetaOthello** ![New](https://img.shields.io/badge/-New-brightgreen) (U Vermont, Feb 2026) — **Controlled multi-variant study** reveals transformers converge on shared board-state representations transferable across game variants. [[Paper](https://arxiv.org/abs/2602.23164)]
 
 ---
 
