@@ -28,20 +28,29 @@ A curated glossary of key concepts behind world models, explained in plain langu
 <tr><td>Training</td><td><a href="#model-based-reinforcement-learning">Model-Based RL</a></td><td>Learn a world model, then plan inside it</td></tr>
 <tr><td>Control</td><td><a href="#latent-action-learning-how-genie-learns-controls">Latent Action Learning</a></td><td>Discover actions from unlabeled video</td></tr>
 <tr><td>Scaling</td><td><a href="#ringattention">RingAttention</a></td><td>Distribute attention across GPUs for 1M+ tokens</td></tr>
-<tr><td rowspan="14"><strong>4 — World Models</strong><br>(2025-2026)</td><td>Architecture</td><td><a href="#mixture-of-physics-experts-mope">MoPE</a></td><td>Specialized physics modules with routing</td></tr>
+<tr><td rowspan="23"><strong>4 — World Models</strong><br>(2025-2026)</td><td>Architecture</td><td><a href="#mixture-of-physics-experts-mope">MoPE</a></td><td>Specialized physics modules with routing</td></tr>
 <tr><td>Architecture</td><td><a href="#chisel-in-marble">Chisel in Marble</a></td><td>Decouples 3D structure from style</td></tr>
+<tr><td>Architecture</td><td><a href="#spatial-memory-bank">Spatial Memory Bank</a></td><td>Persistent per-location store; revisit a place, retrieve it</td></tr>
+<tr><td>Scaling</td><td><a href="#kv-cache-compression-for-streaming-video">KV Cache Compression</a></td><td>Bounded-size attention cache for indefinite streaming</td></tr>
 <tr><td>3D representation</td><td><a href="#semantically-layered-3d-mesh">Semantically Layered 3D Mesh</a></td><td>Mesh organized into labeled object layers</td></tr>
 <tr><td>3D representation</td><td><a href="#multi-view-consistency">Multi-View Consistency</a></td><td>All camera angles agree on geometry</td></tr>
+<tr><td>3D representation</td><td><a href="#editable-persistent-3d-asset-pipelines">Editable Persistent 3D Asset Pipelines</a></td><td>Generate to mesh/3DGS for Unity, Unreal, Isaac Sim</td></tr>
 <tr><td>Generation</td><td><a href="#discrete-diffusion-adaptation-dda">DDA</a></td><td>Diffusion over discrete tokens</td></tr>
 <tr><td>Generation</td><td><a href="#unified-flow-architecture">Unified Flow Architecture</a></td><td>Continuous noise-to-data transformation</td></tr>
 <tr><td>Generation</td><td><a href="#generative-latent-prediction-glp">GLP</a></td><td>Predict future in latent space, then decode</td></tr>
 <tr><td>Generation</td><td><a href="#3d-cache-conditioned-video-diffusion">3D Cache Conditioned Video Diffusion</a></td><td>3D scene guides 2D diffusion</td></tr>
 <tr><td>Generation</td><td><a href="#trajectory-guided-panoramic-video-diffusion">Traj. Panoramic Video Diffusion</a></td><td>360-degree video following a camera path</td></tr>
 <tr><td>Generation</td><td><a href="#hierarchical-3d-block-inpainting">Hierarchical 3D Block Inpainting</a></td><td>Fill 3D scenes coarse-to-fine</td></tr>
+<tr><td>Generation</td><td><a href="#native-joint-audio-video-generation">Native Joint Audio-Video</a></td><td>One model, frame-aligned video and sound</td></tr>
 <tr><td>Training</td><td><a href="#self-forcing">Self-Forcing</a></td><td>Train on own predictions to reduce drift</td></tr>
+<tr><td>Training</td><td><a href="#checkpointed--multi-agent-self-forcing">Checkpointed &amp; Multi-Agent Self-Forcing</a></td><td>Ground-truth resets + shared state for multiplayer</td></tr>
 <tr><td>Training</td><td><a href="#forward-backward-generation">Forward-Backward Generation</a></td><td>Enforce consistency in both time directions</td></tr>
+<tr><td>Training</td><td><a href="#history-augmentation-against-drift">History Augmentation</a></td><td>Perturb history during training to survive imperfect inputs</td></tr>
+<tr><td>Training</td><td><a href="#least-action--lagrangian-world-models">Lagrangian World Models</a></td><td>Whole-trajectory physics from a learned action functional</td></tr>
 <tr><td>Control</td><td><a href="#cross-domain-action-conditioning">Cross-Domain Action Conditioning</a></td><td>Actions that generalize across environments</td></tr>
+<tr><td>Control</td><td><a href="#natural-language-world-control">Natural-Language World Control</a></td><td>Steer worlds with free-form text mid-generation</td></tr>
 <tr><td>Planning</td><td><a href="#llm-driven-procedural-planning">LLM-Driven Procedural Planning</a></td><td>LLM generates action plans for agents</td></tr>
+<tr><td>Interpretability</td><td><a href="#physics-emergence-zone">Physics Emergence Zone</a></td><td>Mid layers encode physics; probe and steer</td></tr>
 </table>
 
 ![Concept Dependency Graph](fig_concept_dependency.png)
@@ -597,7 +606,7 @@ Instead of building a 3D model out of triangles, you train a neural network that
 
 > Learn to predict the future in abstract representation space — not by generating pixels, but by predicting *what the representation of the future should look like*.
 
-**Category:** Training | **Key papers:** LeCun 2022 ("A Path Towards Autonomous Machine Intelligence"), V-JEPA (Bardes et al. 2024, Meta) | **Related:** [GLP](#generative-latent-prediction-glp), [RSSM](#rssm-recurrent-state-space-model), [SSM](#ssm-state-space-model)
+**Category:** Training | **Key papers:** LeCun 2022 ("A Path Towards Autonomous Machine Intelligence"), V-JEPA (Bardes et al. 2024, Meta), V-JEPA 2 (Meta, Jun 2025), V-JEPA 2.1 (Meta, Mar 2026) | **Related:** [GLP](#generative-latent-prediction-glp), [RSSM](#rssm-recurrent-state-space-model), [SSM](#ssm-state-space-model), [Physics Emergence Zone](#physics-emergence-zone)
 
 ```
 ẑ_(t+k) = Predictor(z_t, Δt=k)
@@ -648,6 +657,16 @@ Loss: ‖ẑ_target - z_target‖²
 ### Why it matters for world models
 
 JEPA represents a philosophical alternative to generative world models: instead of learning to *render* the future, learn to *understand* it. V-JEPA produces representations useful for downstream tasks (action recognition, planning) without ever generating a single pixel. [GLP](#generative-latent-prediction-glp) can be thought of as "generative JEPA" — it adds a decoder to produce actual frames from the predicted representations.
+
+The line has evolved fast since the original V-JEPA paper:
+
+| Version | Year | Key advance |
+| --- | --- | --- |
+| V-JEPA | Feb 2024 | First video JEPA; masked patch prediction in representation space |
+| V-JEPA 2 | Jun 2025 | 1M+ hours of pre-training; <62 hours fine-tuning for zero-shot robotic planning (16× faster than video-generation-based planners) |
+| V-JEPA 2.1 | Mar 2026 | **Dense Predictive Loss + Deep Self-Supervision** apply the JEPA objective to *every* encoder layer, not just the top; multi-modal tokenizers produce spatially organized, temporally stable representations |
+
+V-JEPA 2.1's "deep self-supervision" is the key step beyond V-JEPA 2: instead of training only the predictor head, *every* intermediate layer is forced to predict its own masked content. This is the same observation the [Physics Emergence Zone](#physics-emergence-zone) work makes from the other direction — that useful structure lives in middle layers — used here as a training signal rather than a probing target.
 
 ### Quick analogy
 
@@ -796,7 +815,7 @@ Transcribing a movie into a sequence of numbered scene codes. A language model l
 
 > Represents 3D scenes as millions of tiny fuzzy blobs, enabling real-time photorealistic rendering at 60-100 FPS.
 
-**Category:** 3D representation | **Key papers:** Kerbl et al. 2023 | **Key models:** Marble (World Labs), Visionary, HunyuanWorld | **Supersedes:** [NeRF](#nerf-neural-radiance-fields) (for real-time use)
+**Category:** 3D representation | **Key papers:** Kerbl et al. 2023 | **Key models:** Marble (World Labs), Visionary, HunyuanWorld, Lyra 2.0 (NVIDIA), Spark 2.0 (World Labs, open-source renderer) | **Supersedes:** [NeRF](#nerf-neural-radiance-fields) (for real-time use) | **Related:** [Editable Persistent 3D Asset Pipelines](#editable-persistent-3d-asset-pipelines)
 
 ```
 G(x) = exp(-½ × (x - μ)ᵀ × Σ⁻¹ × (x - μ))
@@ -838,7 +857,7 @@ Building a scene:
 
 ### Why it matters for world models
 
-World models need internal 3D representations that are differentiable (trainable end-to-end), real-time (fast enough for interaction), and exportable (usable in game engines). Gaussian Splatting checks all three boxes. Used in Marble (World Labs), Visionary, and HunyuanWorld.
+World models need internal 3D representations that are differentiable (trainable end-to-end), real-time (fast enough for interaction), and exportable (usable in game engines). Gaussian Splatting checks all three boxes. Used in Marble (World Labs), Visionary, and HunyuanWorld. **Lyra 2.0** (NVIDIA, Apr 2026) generates a persistent explorable 3DGS scene from a single image and exports it to Isaac Sim. **Spark 2.0** (World Labs, Apr 2026) is the open-source streaming renderer with LOD that puts 100M+ Gaussians in any browser — collapsing the gap between a 3DGS file and a playable scene. See [Editable Persistent 3D Asset Pipelines](#editable-persistent-3d-asset-pipelines) for the broader production-pipeline trend.
 
 ### Quick analogy
 
@@ -1166,7 +1185,7 @@ A relay race where each runner (GPU) carries partial results and hands them off 
 
 > Multiple specialized neural networks each handle a different type of physics, with a router selecting the right expert for each situation.
 
-**Category:** Architecture | **Key models:** ProPhy | **Related:** [DiT](#diffusion-transformer-dit)
+**Category:** Architecture | **Key models:** ProPhy | **Related:** [DiT](#diffusion-transformer-dit), [Least-Action / Lagrangian World Models](#least-action--lagrangian-world-models), [Physics Emergence Zone](#physics-emergence-zone)
 
 ```
 output = Σᵢ gᵢ(x) × Expertᵢ(x)       where Σᵢ gᵢ(x) = 1
@@ -1203,7 +1222,7 @@ weighted combination of predictions
 
 ### Why it matters for world models
 
-**ProPhy** uses a mixture of semantic + refinement physics experts to progressively align token-level physical dynamics during video generation. As world models aim for physically accurate simulation across diverse scenarios, MoPE provides a scalable way to handle multiple physics regimes without one model learning everything.
+**ProPhy** uses a mixture of semantic + refinement physics experts to progressively align token-level physical dynamics during video generation. As world models aim for physically accurate simulation across diverse scenarios, MoPE provides a scalable way to handle multiple physics regimes without one model learning everything. A complementary thread, [Least-Action / Lagrangian World Models](#least-action--lagrangian-world-models), goes the other way: rather than learning one expert per regime, learn a single neural Lagrangian that constrains the whole trajectory at once.
 
 ### Quick analogy
 
@@ -1248,6 +1267,86 @@ Marble with Chisel can take multimodal inputs (images, text, sketches) and produ
 ### Quick analogy
 
 A sculptor's chisel separates carving the shape from painting it. Carve the form first, then apply any finish — same structure, different surface treatment.
+
+---
+
+## Spatial Memory Bank
+
+> A persistent store of past frames, tokens, or features indexed by 3D position (or some semantic key), retrieved on demand so that revisiting a place looks like the place — even hundreds of frames later.
+
+**Category:** Architecture | **Key models:** WORLDMEM, RELIC (Adobe), MosaicMem, Captain Safari, HyDRA, Astra | **Related:** [Self-Forcing](#self-forcing), [Multi-View Consistency](#multi-view-consistency), [Transformer Internals](#transformer-internals-attention-mlp-layernorm)
+
+```
+Standard attention:  attend(query_t, [frame_{t-k}, ..., frame_{t-1}])      # last k frames
+Memory bank:         attend(query_t, retrieve(position_t, full_history))    # by location
+```
+
+> **Read it as:** Standard rolling-window attention only sees the last `k` frames. A memory bank stores *all* past tokens indexed by 3D position (or semantic key) and retrieves only the ones relevant to where the camera is *now*. Memory cost stays bounded; reach becomes unbounded.
+
+A spatial memory bank treats the world as a persistent map rather than a sliding context window. When the camera returns to a place visited 500 frames ago, the model retrieves the original tokens for that location rather than regenerating it from scratch. That is what makes "explorable persistent world" different from "long video."
+
+### How it works
+
+```
+Write:    each generated frame --> tokenize --> store with (x, y, z, t) key
+Read:     given new camera pose
+            --> compute visible region
+            --> retrieve tokens with matching keys
+            --> inject into the attention cache
+```
+
+| Model | Memory strategy |
+| --- | --- |
+| WORLDMEM | Memory bank with attention; 3D position keys |
+| RELIC | Camera-aware compressed latent tokens in KV cache |
+| MosaicMem | Hybrid mosaic + token representation |
+| Captain Safari | Pose-conditioned retriever |
+| HyDRA | Spatiotemporal relevance scoring for retrieval |
+| Astra | Noise-augmented history memory (drift-aware) |
+
+### Why it matters for world models
+
+Without a memory bank, a 60-second world drifts: walk down the corridor, turn around, and the painting on the wall has become a different painting. With a memory bank, the world has *places* the model can revisit. This is what closes the gap between "infinite video" and "explorable world" — the same gap that separates a hallway in a movie from a hallway in a video game.
+
+### Quick analogy
+
+Sliding context window = goldfish memory. Spatial memory bank = a library's card catalog: you don't memorize every book, but you can retrieve any book by where it sits on the shelf.
+
+---
+
+## KV Cache Compression for Streaming Video
+
+> Compress the key-value cache that transformer attention reads from, so video world models can stream indefinitely without their per-frame cost growing with session length.
+
+**Category:** Scaling | **Key models:** RELIC (Adobe), Yume-1.5, Inferix, WorldCache (MBZUAI) | **Related:** [RingAttention](#ringattention), [Transformer Internals](#transformer-internals-attention-mlp-layernorm), [Spatial Memory Bank](#spatial-memory-bank)
+
+```
+Naive cache:   KV_t = [k_1, v_1, ..., k_t, v_t]                  # grows linearly in t
+Compressed:    KV_t = compress(KV_{t-1}) ⊕ (k_t, v_t)            # bounded size
+```
+
+> **Read it as:** Each new frame's key-value pair gets appended to the cache. Without compression, the cache grows forever. Compression maps the old cache to a smaller representation each step — keeping memory bounded while preserving the information the current query is still likely to look up.
+
+In a transformer, every previous token's key and value vectors are stored so that attention can refer back to them. For video that becomes huge: a 30-fps minute-long generation has 1800 frames times thousands of tokens per frame. KV cache compression keeps that history accessible at constant cost, which is what makes "infinite streaming" tractable.
+
+### How it works
+
+```
+RELIC:        camera-aware spatial pooling of older KV pairs
+Yume-1.5:     unify context via linear attention + bidirectional distillation
+Inferix:      semi-autoregressive block diffusion with an LLM-style cache
+WorldCache:   perception-constrained heterogeneous token caching (different tokens, different cache budgets)
+```
+
+The compression strategies share one principle: keep the tokens the *current* query is most likely to retrieve, drop or merge the tokens with low expected attention weight. This is closely related to but distinct from a [Spatial Memory Bank](#spatial-memory-bank) — the cache lives inside attention; the memory bank is an external store the cache reads from.
+
+### Why it matters for world models
+
+Streaming interactive video needs constant per-frame cost. Without KV cache compression, latency grows with session length — fine for a 5-second clip, fatal for a 10-minute game session. This is the infrastructure trick behind real-time long-horizon generation in Yume-1.5, RELIC, and the rest of the 2025-26 streaming wave.
+
+### Quick analogy
+
+Storing every email you've ever received forever vs. a smart inbox that auto-archives old threads and surfaces only what is still relevant to your current conversation.
 
 ---
 
@@ -1332,6 +1431,58 @@ Multi-view consistency is what separates a *video generator* from a *world simul
 ### Quick analogy
 
 A movie set vs. a real building. A set looks correct from the one camera angle it was designed for. A real building looks correct from every angle because it *actually exists* in 3D. Multi-view consistency ensures generated worlds behave like real buildings, not movie sets.
+
+---
+
+## Editable Persistent 3D Asset Pipelines
+
+> Generate a world not as a pixel stream but as a stack of explicit 3D assets — mesh, Gaussian splats, scene graph — that can be edited and imported into a traditional game engine like Unity, Unreal, or Isaac Sim.
+
+**Category:** 3D representation | **Key models:** HY-World 2.0 (Tencent, Apr 2026), Lyra 2.0 (NVIDIA, Apr 2026), Marble (World Labs), Spark 2.0 (World Labs, open-source 3DGS renderer) | **Related:** [Gaussian Splatting](#gaussian-splatting), [Semantically Layered 3D Mesh](#semantically-layered-3d-mesh), [Chisel in Marble](#chisel-in-marble), [Multi-View Consistency](#multi-view-consistency)
+
+```
+Pixel-only:        text/image --> [black box] --> video frames        # ephemeral
+Asset pipeline:    text/image --> stage 1 (panorama) -->
+                                  stage 2 (geometry)  -->
+                                  stage 3 (textures)  -->
+                                  stage 4 (final 3DGS / mesh)  --> import to Unreal / Unity / Isaac Sim
+```
+
+> **Read it as:** Instead of producing video that ends when generation ends, the system produces *files*: a mesh you can edit, splats you can stream, a scene graph you can rewrite. The world outlives the model that made it.
+
+The shift is from "generative video as the final artifact" to "generative model as a 3D asset factory." The output is structured enough that an artist can open it in Blender, a roboticist can drop it into Isaac Sim, or a game engine can render it at 120 fps *without invoking the diffusion model at all*.
+
+### How it works
+
+```
+HY-World 2.0 (4-stage pipeline):
+  HY-Pano-2.0  -->  WorldNav  -->  WorldStereo 2.0  -->  WorldMirror 2.0
+  (panorama)       (navigation)   (stereo geometry)    (final 3DGS / mesh)
+
+Lyra 2.0:
+  single image  -->  self-augmented video rollout  -->  3DGS / mesh export  -->  Isaac Sim
+
+Marble (Chisel):
+  multimodal input  -->  structure stage  -->  style stage  -->  splats / mesh / video
+
+Spark 2.0:
+  any 3DGS scene  -->  LOD streaming renderer  -->  browser playback at 100M+ Gaussians
+```
+
+| Model | Final asset | Editor / engine target |
+| --- | --- | --- |
+| HY-World 2.0 | Mesh + 3DGS | Unity / Unreal / Isaac Sim |
+| Lyra 2.0 | 3DGS / mesh from one image | Isaac Sim |
+| Marble | Splats, mesh, or video | Pick the format you need |
+| Spark 2.0 | Renderer, not generator | Browser; pairs with any 3DGS source |
+
+### Why it matters for world models
+
+A pixel-stream world model is a *demo*. An asset-pipeline world model is *production*. The export step is what connects generative AI to existing 3D toolchains — Unreal, Unity, Isaac Sim, Blender — that have a decade of editor, lighting, and physics infrastructure the model gets to reuse instead of reinvent. It is also what unlocks robotics: Isaac Sim doesn't run a diffusion model in the loop, but it will happily ingest a 3DGS file Lyra 2.0 produced.
+
+### Quick analogy
+
+Photographing a building vs. handing someone the blueprints. The first is a record of one moment; the second can be modified, scaled, lit differently, and rebuilt somewhere else.
 
 ---
 
@@ -1602,11 +1753,56 @@ Rebuilding a ruined building: first the frame, then walls and rooms, then furnis
 
 ---
 
+## Native Joint Audio-Video Generation
+
+> Generate aligned video and audio in a single model pass — same transformer, same denoising loop — rather than producing video first and dubbing audio onto it as a post-step.
+
+**Category:** Generation | **Key models:** Veo 3 / Veo 3.1 (synchronized dialogue + music + ambient sound), Happy Oyster (joint AV multimodal world), AVWM (modality-expert DiT with binaural spatial cues) | **Related:** [Diffusion Transformer (DiT)](#diffusion-transformer-dit), [Spacetime Patches](#spacetime-patches), [Unified Flow Architecture](#unified-flow-architecture)
+
+```
+Two-stage:   video = G_v(text);   audio = G_a(video, text)        # alignment is best-effort
+Joint:       (video, audio) = G(text)                              # frame-aligned by construction
+```
+
+> **Read it as:** Two-stage generation produces video and audio separately, then tries to line them up — lip-sync errors, mistimed footsteps. Joint generation produces both modalities in the same denoising loop, with shared attention over both, so frame-level alignment is enforced by construction.
+
+A native joint generator treats audio and video as two halves of one signal. The same transformer attends to spectrogram tokens (or waveform patches) and video patches simultaneously; cross-modal attention forces temporal correspondence. The output is one synchronized clip, not two streams that need reconciliation.
+
+### How it works
+
+```
+text  -->  shared transformer
+              |
+              +--> video patches (DiT-style)
+              +--> audio tokens / spectrogram patches
+              |
+              cross-modal attention enforces alignment
+              |
+              v
+       synchronized (video, audio)
+```
+
+| Model | Joint-AV mechanism |
+| --- | --- |
+| Veo 3 / Veo 3.1 | Native synchronized dialogue + music + ambient sound in one pass |
+| Happy Oyster | Joint audio-video with mid-generation voice/text/image steering |
+| AVWM | Modality-expert DiT with binaural spatial cues |
+
+### Why it matters for world models
+
+A *world* is not silent. Footsteps thud when a character walks; doors creak when they open; a thrown stone produces a splash at the moment it hits the water. Bolting audio on after the fact misses the cause-effect structure that makes a world feel real. Joint generation aligns audio events with visual events causally, which is a step toward worlds that can be *heard* as well as seen.
+
+### Quick analogy
+
+Recording a movie with a boom mic on set vs. dubbing all the dialogue in post — the first captures real causal timing; the second always has tells.
+
+---
+
 ## Self-Forcing
 
 > Train a sequential model on its own predictions (not ground truth inputs), so it learns to recover from its own mistakes during long rollouts.
 
-**Category:** Training | **Key models:** Solaris, Waypoint-1 (Overworld) | **Related:** [Autoregression](#autoregression)
+**Category:** Training | **Key models:** Solaris, Waypoint-1 (Overworld), Matrix-Game 3.0, Agora-1 | **Related:** [Autoregression](#autoregression), [Checkpointed & Multi-Agent Self-Forcing](#checkpointed--multi-agent-self-forcing), [History Augmentation against Drift](#history-augmentation-against-drift)
 
 ```
 Teacher forcing:  Loss = Σ ‖f(x_t^real) - x_(t+1)^real‖²
@@ -1637,11 +1833,57 @@ Self-forcing (training):
 
 ### Why it matters for world models
 
-World models generate hundreds of frames. Without self-forcing, small errors at frame 10 cause collapse by frame 30. **Solaris** uses checkpointed self-forcing (periodic ground-truth resets) for multiplayer Minecraft. **Waypoint-1** (Overworld) trains from scratch with self-forcing on 10K hours of gameplay.
+World models generate hundreds of frames. Without self-forcing, small errors at frame 10 cause collapse by frame 30. **Solaris** uses checkpointed self-forcing (periodic ground-truth resets) for multiplayer Minecraft. **Waypoint-1** (Overworld) trains from scratch with self-forcing on 10K hours of gameplay. **Matrix-Game 3.0** and **Agora-1** extend the technique to long-horizon and multi-agent settings — see [Checkpointed & Multi-Agent Self-Forcing](#checkpointed--multi-agent-self-forcing). [History Augmentation against Drift](#history-augmentation-against-drift) is a cheaper, complementary attack on the same drift problem.
 
 ### Quick analogy
 
 Learning to ride a bike: teacher forcing = training wheels always on (never learn to balance). Self-forcing = training wheels off, but someone catches you when you fall.
+
+---
+
+## Checkpointed & Multi-Agent Self-Forcing
+
+> Variants of [Self-Forcing](#self-forcing) that periodically inject ground-truth resets (checkpointing) and that synchronize multiple agents' rollouts (multi-agent), enabling stable long-horizon and *multiplayer* world generation.
+
+**Category:** Training | **Key models:** Solaris (checkpointed + multi-agent Minecraft), Agora-1 (4-player playable deathmatch), Matrix-Game 3.0 (40 FPS, minute-long horizon) | **Related:** [Self-Forcing](#self-forcing), [Spatial Memory Bank](#spatial-memory-bank), [Multi-View Consistency](#multi-view-consistency)
+
+```
+Plain self-forcing:           x̂_t --> model --> x̂_{t+1}                          # may still drift
+Checkpointed self-forcing:    every K steps: x̂_t := x_t^real                     # bounded drift
+Multi-agent self-forcing:     {x̂_t^A, x̂_t^B} share state S_t via cross-attention # consistent views
+```
+
+> **Read it as:** Plain self-forcing trains on the model's own predictions all the way through, which can still let small early errors compound over hundreds of frames. Checkpointed self-forcing rolls back to ground truth every K steps. Multi-agent self-forcing runs the same rollout from multiple viewpoints (or for multiple players) with shared state, forcing all views to agree on the underlying world.
+
+Two extensions of the same idea. Checkpointing stops drift from cascading into total collapse. Multi-agent enforces that two players in the same world see *the same world* — when player A shoots a wall, player B must see the bullet hole, even though their view is generated by a separate rollout.
+
+### How it works
+
+```
+Checkpointed:
+  step 1..K-1:  x̂_t  --> model --> x̂_{t+1}    (self-forced)
+  step K:       x̂_K := x_K^real                (reset to ground truth)
+  step K+1..:   resume self-forcing
+
+Multi-agent:
+  player A view: generate frames conditioned on shared world state S_t
+  player B view: generate frames conditioned on the same S_t
+  cross-view consistency loss keeps S_t synchronized between rollouts
+```
+
+| Model | Variant | Use case |
+| --- | --- | --- |
+| Solaris | Checkpointed + multi-agent | Multiplayer Minecraft |
+| Agora-1 | Multi-agent | 4-player generated deathmatch |
+| Matrix-Game 3.0 | Long-horizon variant | 40 FPS 720p, minute-long consistency |
+
+### Why it matters for world models
+
+Plain Self-Forcing got the field to single-player long-horizon. Checkpointing extends the horizon further by capping drift. Multi-agent Self-Forcing is the leap to *shared* worlds — the difference between a movie and a game. Agora-1 is the first playable example: four players experience one generated scene, with each player's view rendered by its own rollout but locked to the same world state.
+
+### Quick analogy
+
+Plain self-forcing = a long solo run with no water stations. Checkpointed = water stations every mile. Multi-agent = a team relay where everyone has to be on the same track at the same time, even though each runner has their own legs.
 
 ---
 
@@ -1684,11 +1926,96 @@ Proofreading a story by reading it both forward and backward — inconsistencies
 
 ---
 
+## History Augmentation against Drift
+
+> Perturb the history fed to a streaming model during training — with noise, blur, or self-generated variations — so it learns to keep generating coherently even when its inputs are degraded.
+
+**Category:** Training | **Key models:** Astra (noise-augmented history memory), Lucy 2.0 (smart history augmentation), Lyra 2.0 (self-augmented histories) | **Related:** [Self-Forcing](#self-forcing), [Conditioning Augmentation vs Dynamic Noising](#conditioning-augmentation-vs-dynamic-noising)
+
+```
+Standard:           input_t = [x_{t-k}, ..., x_{t-1}]                            # clean history
+History-augmented:  input_t = [perturb(x_{t-k}), ..., perturb(x_{t-1})]          # noisy history
+```
+
+> **Read it as:** Instead of feeding the model a clean history during training, perturb it — add noise, blur frames, swap channels, simulate compression artifacts. The model learns to keep generating coherently even when its inputs are degraded, which is exactly what happens at inference time after a few hundred rollout steps.
+
+A different attack on the same problem [Self-Forcing](#self-forcing) solves. A model trained only on clean history collapses when its own predictions (imperfect) get re-fed as input. History augmentation makes the model robust to that input degradation directly, by exposing it to similar degradation during training — without the expense of full autoregressive rollouts in the training loop.
+
+### How it works
+
+```
+training step:
+  history = real_frames[t-k:t]
+  history_aug = add_noise_or_artifacts(history)       <-- key step
+  predict frame_t from history_aug
+  loss = ‖predicted - real‖²
+```
+
+| Method | Strategy | Cost |
+| --- | --- | --- |
+| [Self-Forcing](#self-forcing) | Feed model's own predictions during training | High (full rollout per step) |
+| History Augmentation | Feed perturbed real history during training | Low (just augment) |
+| Combined | Both robustness signals | High but stable |
+
+### Why it matters for world models
+
+Self-Forcing requires expensive autoregressive rollouts during training. History augmentation is cheaper — it perturbs existing frames — and the two are often combined. Lucy 2.0's "smart history augmentation" is what lets it sustain 30 fps 1080p real-time video transformation without collapse; Lyra 2.0's self-augmented histories are what give it persistent explorable 3D worlds from a single image.
+
+### Quick analogy
+
+Pilots train in turbulent simulators, not just smooth-air ones, so that turbulence at 30,000 feet doesn't feel new. History augmentation does the same for the model's inputs.
+
+---
+
+## Least-Action / Lagrangian World Models
+
+> Train the world model so its future rollouts minimize a *learned action functional* — the same mathematical structure classical mechanics uses to describe how real objects move.
+
+**Category:** Training | **Key models:** LaWM (May 2026) | **Related:** [Mixture-of-Physics-Experts (MoPE)](#mixture-of-physics-experts-mope), [Model-Based Reinforcement Learning](#model-based-reinforcement-learning)
+
+```
+Classical mechanics:   trajectory_real = argmin ∫ L(state, ∂state/∂t) dt
+LaWM:                  trajectory_pred = argmin ∫ L_θ(state, ∂state/∂t) dt
+                                                  ^^ learned functional
+```
+
+> **Read it as:** In physics, real motion follows the path that minimizes a quantity called *action* (the time-integral of the Lagrangian L = kinetic energy − potential energy). LaWM learns a neural Lagrangian `L_θ` and generates futures that minimize it — so the dynamics are constrained to be *some* consistent physics, even if not the one we know.
+
+Standard video diffusion models predict next frames pixel-by-pixel; nothing in the loss forces the trajectory as a whole to be physically coherent. A Lagrangian world model adds a structural prior: whatever the generated world's physics is, it has to be expressible as a least-action principle. That alone rules out a huge class of inconsistent trajectories.
+
+### How it works
+
+```
+state_t --> [neural Lagrangian L_θ] --> scalar
+                                |
+                                v
+        find trajectory that minimizes ∫ L_θ dt
+                                |
+                                v
+                       future world states
+```
+
+| Approach | Constraint scope | Example |
+| --- | --- | --- |
+| Pixel L2 | Per-frame | Most video diffusion models |
+| Conservation losses | Per-pair-of-frames | ProPhy, PhysicsMind |
+| Lagrangian (LaWM) | Whole-trajectory | LaWM |
+
+### Why it matters for world models
+
+Most physics losses are *local* — penalties on frame-to-frame conservation violations. A Lagrangian formulation is *global*: it constrains the entire trajectory at once, which is why classical mechanics is formulated that way. LaWM is one of the first attempts to give world models the same mathematical scaffolding that classical mechanics uses for real systems, rather than retrofitting physics as an after-the-fact regularizer.
+
+### Quick analogy
+
+A pixel-level physics loss is like checking each frame of a basketball video for individual implausibilities. A Lagrangian loss is like checking that the *whole arc of the throw* is the trajectory a real ball would take — a much stronger constraint, derived from a single principle.
+
+---
+
 ## Cross-Domain Action Conditioning
 
 > Learn action controls that generalize across different visual environments, so the same action works in any generated world.
 
-**Category:** Control | **Key models:** GWM-1 (Runway, Dec 2025) | **Related:** [Latent Action Learning](#latent-action-learning-how-genie-learns-controls)
+**Category:** Control | **Key models:** GWM-1 (Runway, Dec 2025), SCOPE (May 2026, CrossFPS dataset) | **Related:** [Latent Action Learning](#latent-action-learning-how-genie-learns-controls), [Natural-Language World Control](#natural-language-world-control)
 
 ```
 s_(t+1) = F(s_t, a_t)       where a_t is domain-agnostic
@@ -1719,11 +2046,52 @@ Training on data from multiple domains forces the model to learn that "move forw
 
 ### Why it matters for world models
 
-**GWM-1** (Runway, Dec 2025) uses cross-domain action conditioning across three variants — worlds, avatars, robotics — with a unified interface handling camera movements, events, poses, and speech. One model, many world types.
+**GWM-1** (Runway, Dec 2025) uses cross-domain action conditioning across three variants — worlds, avatars, robotics — with a unified interface handling camera movements, events, poses, and speech. One model, many world types. **SCOPE** (May 2026) extends the same principle *within* a single genre: its CrossFPS dataset spans seven FPS titles with frame-aligned 10-DoF controller signals, and its spatially-selective per-pixel conditioning keeps weapon-local events (fire, reload) from disrupting the broader scene — cross-game generalization rather than cross-domain.
 
 ### Quick analogy
 
 Video game controls are universal: W = forward, Space = jump. Whether you're in a racing game or an RPG, the controls mean the same thing. Cross-domain action conditioning teaches generative models this universality.
+
+---
+
+## Natural-Language World Control
+
+> Steer a generated world with free-form text mid-generation — adding objects, changing weather, triggering events — instead of via a fixed vocabulary of keyboard or mouse actions.
+
+**Category:** Control | **Key models:** Genie 3 (promptable world events), Hunyuan-GameCraft-2 (text-driven interaction), Yume-1.5 (real-time text steering), Happy Oyster (text + voice steering with directing/wandering modes) | **Related:** [Cross-Domain Action Conditioning](#cross-domain-action-conditioning), [Latent Action Learning](#latent-action-learning-how-genie-learns-controls), [Classifier-Free Guidance (CFG)](#classifier-free-guidance-cfg)
+
+```
+Discrete control:   frame_{t+1} = G(frame_t, action ∈ {W, A, S, D, ...})
+Language control:   frame_{t+1} = G(frame_t, text_prompt_t)
+```
+
+> **Read it as:** Discrete control restricts the player to a fixed vocabulary — the buttons the model was trained on. Language control accepts arbitrary text at any frame, so you can say "a thunderstorm rolls in" or "the door opens" without having pre-registered that as an action.
+
+The model conditions each generated frame on both the previous frame *and* a current text instruction. The instruction can change every frame, every second, or only once at the start — the control surface is continuous and compositional rather than discrete.
+
+### How it works
+
+```
+t=0:   "a sunlit forest path"          --> generate frames
+t=10:  "a deer steps onto the path"    --> next frames include the deer
+t=20:  "rain begins"                   --> weather changes
+t=30:  (no new prompt)                 --> continue with rain
+```
+
+| Model | Language-control style |
+| --- | --- |
+| Genie 3 | Promptable world events during live play |
+| Hunyuan-GameCraft-2 | Text-driven interaction in place of fixed keys |
+| Yume-1.5 | Real-time streaming with text steering |
+| Happy Oyster | Directing mode (text/voice) + wandering mode (WASD) |
+
+### Why it matters for world models
+
+The set of things a person might want to do in a world is infinite. Discrete actions cap that surface at whatever the training set covered. Language is open-ended and compositional — "the dragon, but smaller, and on fire" is a sentence a player can say but not a button they can press. Happy Oyster goes further, accepting voice and image alongside text — the same control surface a film director uses on set.
+
+### Quick analogy
+
+A console game = playing piano (fixed keys, many possible melodies). A language-controlled world = conversation (the things you can say are unbounded, and meaning compounds across utterances).
 
 ---
 
@@ -1765,5 +2133,49 @@ each step triggers actions in the environment
 ### Quick analogy
 
 A film director (LLM) telling the crew what to build and where to place things on set, step by step, rather than the crew improvising everything from scratch.
+
+---
+
+## Physics Emergence Zone
+
+> An empirical observation that physical variables — mass, gravity, velocity — become linearly decodable from intermediate layers of a video world model at a specific depth range, rather than appearing only at the output.
+
+**Category:** Interpretability | **Key models:** Interpreting Physics in Video World Models (Meta FAIR / McGill, Feb 2026), WMReward, Causal Physics Steering | **Related:** [JEPA / V-JEPA](#jepa--v-jepa-joint-embedding-predictive-architecture), [Mixture-of-Physics-Experts (MoPE)](#mixture-of-physics-experts-mope)
+
+```
+probe_accuracy(physical_variable, layer):
+    rises through mid layers
+    peaks in the "physics emergence zone"
+    drops again near output
+```
+
+> **Read it as:** Train a linear probe to read a physical quantity (e.g., object velocity) from one hidden layer's activations. Plot accuracy versus layer depth. There is a band of layers — neither input-like nor output-like — where the probe works best. That band is where the model has organized physics into a usable representation.
+
+The result echoes classic mechanistic-interpretability findings in language models (semantic features appearing in middle layers) but for physics. It is a *mechanistic* claim: the model is not just producing physically plausible pixels at the output; it is building a structured internal representation of physics that you can read off.
+
+### How it works
+
+```
+1. take a pretrained video world model
+2. for each layer L:
+     freeze the model
+     train a linear probe to predict (e.g.) object velocity from layer L activations
+     measure probe accuracy
+3. the layer-depth vs. accuracy curve reveals the emergence zone
+```
+
+| Layer band | What lives there | Probe accuracy |
+| --- | --- | --- |
+| Early | Texture, edges, low-level pixels | Low |
+| Middle (emergence zone) | Velocity, mass, gravity, object identity | Peaks |
+| Late | Per-pixel render targets | Drops |
+
+### Why it matters for world models
+
+Two big implications. First, **evaluation**: you can now check whether a model has learned physics — not just whether its videos look right. Second, **intervention**: knowing where physics lives lets you steer it. *WMReward* (Meta FAIR, Jan 2026) uses V-JEPA 2's mid-layer representations as a reward signal for inference-time denoising search. *Causal Physics Steering* (May 2026) injects concept activation vectors at the emergence zone to shift physical expectations *without retraining*.
+
+### Quick analogy
+
+X-raying a brain to find which region lights up when you think about gravity. Once you know where the region is, you can also stimulate it to alter the thought — that is what WMReward and Causal Physics Steering do.
 
 ---
